@@ -1,193 +1,193 @@
 // ─── User & Auth ────────────────────────────────────────────────────────────
 export interface User {
-  uid: string;
-  email: string | null;
-  displayName: string | null;
-  photoURL: string | null;
-  isAnonymous: boolean;
-  createdAt: number;
+  uid: string
+  email: string | null
+  displayName: string | null
+  photoURL: string | null
+  isAnonymous: boolean
+  createdAt: number
 }
 
 export interface UserProfile {
-  uid: string;
-  displayName: string;
-  email: string;
-  phone?: string;
-  emergencyContacts: EmergencyContact[];
-  codeWord?: string;
-  fakePin?: string;
-  decoyScreen: DecoyScreenType;
-  stealthModeEnabled: boolean;
-  appLockEnabled: boolean;
-  biometricEnabled: boolean;
-  autoLogoutMinutes: number;
-  childModeEnabled: boolean;
-  createdAt: number;
-  updatedAt: number;
+  uid: string
+  displayName: string
+  email: string
+  phone?: string
+  emergencyContacts: EmergencyContact[]
+  codeWord?: string
+  fakePin?: string
+  decoyScreen: DecoyScreenType
+  stealthModeEnabled: boolean
+  appLockEnabled: boolean
+  biometricEnabled: boolean
+  autoLogoutMinutes: number
+  childModeEnabled: boolean
+  createdAt: number
+  updatedAt: number
 }
 
 // ─── Emergency ──────────────────────────────────────────────────────────────
 export interface EmergencyContact {
-  id: string;
-  name: string;
-  phone: string;
-  relation: string;
-  notifyBySMS: boolean;
-  notifyByCall: boolean;
+  id: string
+  name: string
+  phone: string
+  relation: string
+  notifyBySMS: boolean
+  notifyByCall: boolean
 }
 
 export interface SOSAlert {
-  id: string;
-  uid: string;
-  location: GeoLocation;
-  timestamp: number;
-  status: "active" | "resolved";
-  contactsNotified: string[];
+  id: string
+  uid: string
+  location: GeoLocation
+  timestamp: number
+  status: 'active' | 'resolved'
+  contactsNotified: string[]
 }
 
 // ─── Location & Map ─────────────────────────────────────────────────────────
 export interface GeoLocation {
-  latitude: number;
-  longitude: number;
-  accuracy?: number;
-  address?: string;
+  latitude: number
+  longitude: number
+  accuracy?: number
+  address?: string
 }
 
 export type SafeSpaceType =
-  | "shelter"
-  | "hospital"
-  | "police"
-  | "legal"
-  | "counseling"
-  | "childcare";
+  | 'shelter'
+  | 'hospital'
+  | 'police'
+  | 'legal'
+  | 'counseling'
+  | 'childcare'
 
 export interface SafeSpace {
-  id: string;
-  name: string;
-  type: SafeSpaceType;
-  location: GeoLocation;
-  phone?: string;
-  hours?: string;
-  isOpen?: boolean;
-  rating?: number;
-  reviewCount?: number;
-  verified: boolean;
+  id: string
+  name: string
+  type: SafeSpaceType
+  location: GeoLocation
+  phone?: string
+  hours?: string
+  isOpen?: boolean
+  rating?: number
+  reviewCount?: number
+  verified: boolean
 }
 
 // ─── Journal ─────────────────────────────────────────────────────────────────
 export interface JournalEntry {
-  id: string;
-  uid: string;
-  title: string;
-  content: string; // encrypted
-  mediaUrls: JournalMedia[];
-  mood?: MoodType;
-  tags: string[];
-  createdAt: number;
-  updatedAt: number;
-  isEncrypted: boolean;
+  id: string
+  uid: string
+  title: string
+  content: string // encrypted
+  mediaUrls: JournalMedia[]
+  mood?: MoodType
+  tags: string[]
+  createdAt: number
+  updatedAt: number
+  isEncrypted: boolean
 }
 
 export interface JournalMedia {
-  id: string;
-  type: "photo" | "video" | "audio";
-  url: string;
-  thumbnail?: string;
-  createdAt: number;
+  id: string
+  type: 'photo' | 'video' | 'audio'
+  url: string
+  thumbnail?: string
+  createdAt: number
 }
 
-export type MoodType = "safe" | "anxious" | "scared" | "hopeful" | "neutral";
+export type MoodType = 'safe' | 'anxious' | 'scared' | 'hopeful' | 'neutral'
 
 // ─── Chat ────────────────────────────────────────────────────────────────────
 export interface ChatRoom {
-  id: string;
-  type: "counselor" | "support_group";
-  participants: string[];
-  lastMessage?: string;
-  lastMessageAt?: number;
-  createdAt: number;
+  id: string
+  type: 'counselor' | 'support_group'
+  participants: string[]
+  lastMessage?: string
+  lastMessageAt?: number
+  createdAt: number
 }
 
 export interface ChatMessage {
-  id: string;
-  roomId: string;
-  senderId: string; // anonymous hash
-  content: string;
-  type: "text" | "file" | "image";
-  fileUrl?: string;
-  disappearsAt?: number; // optional self-destruct timestamp
-  createdAt: number;
-  isRead: boolean;
+  id: string
+  roomId: string
+  senderId: string // anonymous hash
+  content: string
+  type: 'text' | 'file' | 'image'
+  fileUrl?: string
+  disappearsAt?: number // optional self-destruct timestamp
+  createdAt: number
+  isRead: boolean
 }
 
 // ─── Community ───────────────────────────────────────────────────────────────
 export interface AnonymousTip {
-  id: string;
-  location?: GeoLocation;
-  description: string;
-  category: "harassment" | "suspicious" | "domestic" | "child_safety" | "other";
-  timestamp: number;
-  upvotes: number;
-  status: "pending" | "reviewed" | "actioned";
+  id: string
+  location?: GeoLocation
+  description: string
+  category: 'harassment' | 'suspicious' | 'domestic' | 'child_safety' | 'other'
+  timestamp: number
+  upvotes: number
+  status: 'pending' | 'reviewed' | 'actioned'
 }
 
 export interface ResourceExchange {
-  id: string;
-  type: "clothes" | "toys" | "supplies" | "food" | "other";
-  description: string;
-  location?: string; // general area only, no exact address
-  contactMethod: "in_app" | "phone";
-  available: boolean;
-  createdAt: number;
+  id: string
+  type: 'clothes' | 'toys' | 'supplies' | 'food' | 'other'
+  description: string
+  location?: string // general area only, no exact address
+  contactMethod: 'in_app' | 'phone'
+  available: boolean
+  createdAt: number
 }
 
 // ─── Safety Plan ─────────────────────────────────────────────────────────────
 export interface SafetyPlan {
-  id: string;
-  uid: string;
-  triggerSigns: string[];
-  safePersons: string[];
-  safeLocations: string[];
-  importantDocuments: string[];
-  escapeBagItems: string[];
-  codeWord?: string;
-  localResources: string[];
-  updatedAt: number;
+  id: string
+  uid: string
+  triggerSigns: string[]
+  safePersons: string[]
+  safeLocations: string[]
+  importantDocuments: string[]
+  escapeBagItems: string[]
+  codeWord?: string
+  localResources: string[]
+  updatedAt: number
 }
 
 // ─── Settings ────────────────────────────────────────────────────────────────
-export type DecoyScreenType = "calculator" | "weather" | "notes" | "news";
+export type DecoyScreenType = 'calculator' | 'weather' | 'notes' | 'news'
 
 export type ThemeKey =
-  | "light"
-  | "dark"
-  | "rose"
-  | "purple"
-  | "ocean"
-  | "midnight";
+  | 'light'
+  | 'dark'
+  | 'rose'
+  | 'purple'
+  | 'ocean'
+  | 'midnight'
 
 // ─── Notifications ───────────────────────────────────────────────────────────
 export interface SafetyAlert {
-  id: string;
-  title: string;
-  body: string;
-  type: "safety_tip" | "area_alert" | "appointment" | "check_in";
-  area?: string;
-  createdAt: number;
-  expiresAt?: number;
+  id: string
+  title: string
+  body: string
+  type: 'safety_tip' | 'area_alert' | 'appointment' | 'check_in'
+  area?: string
+  createdAt: number
+  expiresAt?: number
 }
 
 // ─── Hotlines ────────────────────────────────────────────────────────────────
 export interface Hotline {
-  id: string;
-  name: string;
-  number: string;
-  description: string;
+  id: string
+  name: string
+  number: string
+  description: string
   category:
-    | "domestic_violence"
-    | "child_protection"
-    | "medical"
-    | "police"
-    | "mental_health";
-  available24h: boolean;
+    | 'domestic_violence'
+    | 'child_protection'
+    | 'medical'
+    | 'police'
+    | 'mental_health'
+  available24h: boolean
 }

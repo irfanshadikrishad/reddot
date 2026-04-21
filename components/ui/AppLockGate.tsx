@@ -1,43 +1,42 @@
-import React, { useState, useCallback, useEffect } from "react";
+import { useAppLock } from '@/contexts/AppLockContext'
+import { useTheme } from '@/contexts/ThemeContext'
+import { DecoyScreenType } from '@/types'
+import { router } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
 import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
   ActivityIndicator,
-  Vibration,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from "react-native";
-import { router } from "expo-router";
-import { useAppLock } from "@/contexts/AppLockContext";
-import { useTheme } from "@/contexts/ThemeContext";
-import { getDecoyScreen } from "@/services/secureStorage";
-import { DecoyScreenType } from "@/types";
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Vibration,
+  View,
+} from 'react-native'
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export function AppLockGate({ children }: Props) {
-  const { isLocked, isCheckingLock, isFakeMode, decoyScreen } = useAppLock();
+  const { isLocked, isCheckingLock, isFakeMode, decoyScreen } = useAppLock()
 
   if (isCheckingLock) {
-    return <LoadingScreen />;
+    return <LoadingScreen />
   }
 
   if (isLocked) {
-    return <LockScreen />;
+    return <LockScreen />
   }
 
   // If fake mode activated, show decoy screen
   if (isFakeMode) {
-    return <DecoyRouter screen={decoyScreen} />;
+    return <DecoyRouter screen={decoyScreen} />
   }
 
-  return <>{children}</>;
+  return <>{children}</>
 }
 
 // ─── Loading ──────────────────────────────────────────────────────────────────
@@ -47,23 +46,23 @@ function LoadingScreen() {
     <View style={loadingStyles.container}>
       <Text style={loadingStyles.logo}>🔴</Text>
       <ActivityIndicator
-        color="#C0392B"
-        size="large"
+        color='#C0392B'
+        size='large'
         style={{ marginTop: 24 }}
       />
     </View>
-  );
+  )
 }
 
 const loadingStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D0D0D",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: '#0D0D0D',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   logo: { fontSize: 64 },
-});
+})
 
 // ─── Lock Screen ──────────────────────────────────────────────────────────────
 
@@ -75,86 +74,86 @@ function LockScreen() {
     isPinLockedOut,
     pinLockoutRemainingMs,
     lockReason,
-  } = useAppLock();
-  const { theme } = useTheme();
+  } = useAppLock()
+  const { theme } = useTheme()
 
-  const [pin, setPin] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [pin, setPin] = useState('')
+  const [error, setError] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   // Auto-trigger biometric on mount
   useEffect(() => {
     if (hasBiometric) {
-      handleBiometric();
+      handleBiometric()
     }
-  }, [hasBiometric]);
+  }, [hasBiometric])
 
   const handleBiometric = useCallback(async () => {
-    setIsLoading(true);
-    const result = await unlockWithBiometric();
-    setIsLoading(false);
+    setIsLoading(true)
+    const result = await unlockWithBiometric()
+    setIsLoading(false)
     if (!result.success && result.error) {
-      setError(result.error);
+      setError(result.error)
     }
-  }, [unlockWithBiometric]);
+  }, [unlockWithBiometric])
 
   const handlePinSubmit = useCallback(async () => {
     if (pin.length < 4) {
-      setError("PIN must be at least 4 digits.");
-      return;
+      setError('PIN must be at least 4 digits.')
+      return
     }
-    setIsLoading(true);
-    const result = await unlockWithPin(pin);
-    setIsLoading(false);
+    setIsLoading(true)
+    const result = await unlockWithPin(pin)
+    setIsLoading(false)
 
     if (result.success) {
-      setPin("");
-      setError("");
+      setPin('')
+      setError('')
     } else {
-      Vibration.vibrate(400);
-      setError(result.error ?? "Incorrect PIN.");
-      setPin("");
+      Vibration.vibrate(400)
+      setError(result.error ?? 'Incorrect PIN.')
+      setPin('')
     }
-  }, [pin, unlockWithPin]);
+  }, [pin, unlockWithPin])
 
   const handlePinChange = useCallback(
     (text: string) => {
-      const digits = text.replace(/\D/g, "").slice(0, 6);
-      setPin(digits);
-      if (error) setError("");
+      const digits = text.replace(/\D/g, '').slice(0, 6)
+      setPin(digits)
+      if (error) setError('')
       // Auto-submit at 6 digits
       if (digits.length === 6) {
-        setTimeout(() => unlockWithPin(digits), 100);
+        setTimeout(() => unlockWithPin(digits), 100)
       }
     },
-    [error, unlockWithPin],
-  );
+    [error, unlockWithPin]
+  )
 
   const formatLockoutTime = (ms: number): string => {
-    const totalSeconds = Math.ceil(ms / 1000);
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+    const totalSeconds = Math.ceil(ms / 1000)
+    const mins = Math.floor(totalSeconds / 60)
+    const secs = totalSeconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   const lockReasonText = {
-    startup: "Enter your PIN to continue",
-    background: "App locked due to backgrounding",
-    inactivity: "App locked due to inactivity",
-    manual: "App is locked",
-  };
+    startup: 'Enter your PIN to continue',
+    background: 'App locked due to backgrounding',
+    inactivity: 'App locked due to inactivity',
+    manual: 'App is locked',
+  }
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={[
           styles.lockContainer,
           { backgroundColor: theme.background },
         ]}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps='handled'
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
@@ -167,7 +166,7 @@ function LockScreen() {
 
         {/* Lock reason */}
         <Text style={[styles.lockReason, { color: theme.textSecondary }]}>
-          {lockReasonText[lockReason ?? "startup"]}
+          {lockReasonText[lockReason ?? 'startup']}
         </Text>
 
         {/* PIN input */}
@@ -186,9 +185,9 @@ function LockScreen() {
                 style={[styles.pinInput, { color: theme.text }]}
                 value={pin}
                 onChangeText={handlePinChange}
-                placeholder="Enter PIN"
+                placeholder='Enter PIN'
                 placeholderTextColor={theme.textMuted}
-                keyboardType="number-pad"
+                keyboardType='number-pad'
                 secureTextEntry
                 maxLength={6}
                 autoFocus={!hasBiometric}
@@ -232,7 +231,7 @@ function LockScreen() {
               activeOpacity={0.8}
             >
               {isLoading ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color='#fff' />
               ) : (
                 <Text style={styles.unlockButtonText}>Unlock</Text>
               )}
@@ -276,16 +275,16 @@ function LockScreen() {
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>
-  );
+  )
 }
 
 // ─── Decoy router ─────────────────────────────────────────────────────────────
 
 function DecoyRouter({ screen }: { screen: DecoyScreenType }) {
   useEffect(() => {
-    router.replace(`/fake/${screen}` as any);
-  }, [screen]);
-  return null;
+    router.replace(`/fake/${screen}` as any)
+  }, [screen])
+  return null
 }
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
@@ -293,14 +292,14 @@ function DecoyRouter({ screen }: { screen: DecoyScreenType }) {
 const styles = StyleSheet.create({
   lockContainer: {
     flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 32,
     paddingVertical: 48,
     gap: 20,
   },
   logoContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     marginBottom: 8,
   },
   logoEmoji: {
@@ -309,7 +308,7 @@ const styles = StyleSheet.create({
   },
   appName: {
     fontSize: 36,
-    fontWeight: "800",
+    fontWeight: '800',
     letterSpacing: 1,
   },
   tagline: {
@@ -319,16 +318,16 @@ const styles = StyleSheet.create({
   },
   lockReason: {
     fontSize: 15,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: 8,
   },
   pinSection: {
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     gap: 12,
   },
   pinInputContainer: {
-    width: "100%",
+    width: '100%',
     borderWidth: 1.5,
     borderRadius: 14,
     paddingHorizontal: 20,
@@ -337,11 +336,11 @@ const styles = StyleSheet.create({
   pinInput: {
     fontSize: 24,
     letterSpacing: 8,
-    textAlign: "center",
+    textAlign: 'center',
     paddingVertical: 14,
   },
   pinDots: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: 10,
   },
   pinDot: {
@@ -351,22 +350,22 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 13,
-    textAlign: "center",
+    textAlign: 'center',
   },
   unlockButton: {
-    width: "100%",
+    width: '100%',
     paddingVertical: 16,
     borderRadius: 14,
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 4,
   },
   unlockButtonText: {
-    color: "#fff",
+    color: '#fff',
     fontSize: 17,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   lockoutContainer: {
-    alignItems: "center",
+    alignItems: 'center',
     gap: 8,
     paddingVertical: 24,
   },
@@ -375,18 +374,18 @@ const styles = StyleSheet.create({
   },
   lockoutTitle: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   lockoutText: {
     fontSize: 15,
   },
   lockoutTimer: {
     fontSize: 40,
-    fontWeight: "800",
-    fontVariant: ["tabular-nums"],
+    fontWeight: '800',
+    fontVariant: ['tabular-nums'],
   },
   biometricButton: {
-    alignItems: "center",
+    alignItems: 'center',
     gap: 6,
     paddingVertical: 12,
   },
@@ -398,7 +397,7 @@ const styles = StyleSheet.create({
   },
   privacyText: {
     fontSize: 12,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 16,
   },
-});
+})

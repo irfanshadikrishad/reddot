@@ -1,11 +1,11 @@
 export const GOOGLE_WEB_CLIENT_ID =
-  "996791254766-9rl40a1le79sba7g5mn2q4fp8tll831d.apps.googleusercontent.com";
+  '996791254766-9rl40a1le79sba7g5mn2q4fp8tll831d.apps.googleusercontent.com'
 
 export const APP_CONFIG = {
-  name: "RedDot",
-  packageName: "uk.irfanshadikrishad.reddot",
-  version: "1.0.0",
-  supportEmail: "support@irfanshadikrishad.uk",
+  name: 'RedDot',
+  packageName: 'uk.irfanshadikrishad.reddot',
+  version: '1.0.0',
+  supportEmail: 'support@irfanshadikrishad.uk',
 
   // Security
   AUTO_LOGOUT_MINUTES: 5,
@@ -15,12 +15,12 @@ export const APP_CONFIG = {
 
   // Chat
   DISAPPEARING_MESSAGE_OPTIONS: [
-    { label: "Off", seconds: 0 },
-    { label: "30 seconds", seconds: 30 },
-    { label: "1 minute", seconds: 60 },
-    { label: "5 minutes", seconds: 300 },
-    { label: "1 hour", seconds: 3600 },
-    { label: "24 hours", seconds: 86400 },
+    { label: 'Off', seconds: 0 },
+    { label: '30 seconds', seconds: 30 },
+    { label: '1 minute', seconds: 60 },
+    { label: '5 minutes', seconds: 300 },
+    { label: '1 hour', seconds: 3600 },
+    { label: '24 hours', seconds: 86400 },
   ],
 
   // SOS
@@ -36,22 +36,22 @@ export const APP_CONFIG = {
 
   // Firebase collections
   COLLECTIONS: {
-    USERS: "users",
-    JOURNAL: "journal",
-    SAFE_SPACES: "safeSpaces",
-    TIPS: "communityTips",
-    RESOURCES: "resourceExchange",
-    SAFETY_PLANS: "safetyPlans",
-    SAFETY_ALERTS: "safetyAlerts",
-    SOS_ALERTS: "sosAlerts",
-    REVIEWS: "reviews",
+    USERS: 'users',
+    JOURNAL: 'journal',
+    SAFE_SPACES: 'safeSpaces',
+    TIPS: 'communityTips',
+    RESOURCES: 'resourceExchange',
+    SAFETY_PLANS: 'safetyPlans',
+    SAFETY_ALERTS: 'safetyAlerts',
+    SOS_ALERTS: 'sosAlerts',
+    REVIEWS: 'reviews',
   },
 
   // Firebase Realtime DB paths
   RTDB_PATHS: {
-    CHAT_ROOMS: "chatRooms",
-    MESSAGES: "messages",
-    COUNSELORS_ONLINE: "counselorsOnline",
-    SUPPORT_GROUPS: "supportGroups",
+    CHAT_ROOMS: 'chatRooms',
+    MESSAGES: 'messages',
+    COUNSELORS_ONLINE: 'counselorsOnline',
+    SUPPORT_GROUPS: 'supportGroups',
   },
-} as const;
+} as const
