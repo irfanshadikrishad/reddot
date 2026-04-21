@@ -1,5 +1,3 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
 # dependencies
 node_modules/
 
@@ -31,7 +29,9 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+.env.local
 
 # typescript
 *.tsbuildinfo
@@ -39,3 +39,9 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# firebase
+google-services.json
+GoogleService-Info.plist
+
+/android/app/reddot-release.keystore

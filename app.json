@@ -1,30 +1,83 @@
 {
   "expo": {
-    "name": "reddot",
+    "name": "RedDot",
     "slug": "reddot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "icon": "./assets/images/icon.png",
+    "scheme": "reddot",
+    "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#C0392B"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "uk.irfanshadikrishad.reddot",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "RedDot needs your location to find nearby safe spaces and send it with SOS alerts.",
+        "NSLocationAlwaysUsageDescription": "RedDot needs background location for SOS alerts.",
+        "NSMicrophoneUsageDescription": "RedDot needs microphone access for panic recording.",
+        "NSCameraUsageDescription": "RedDot needs camera access for evidence recording and journal media.",
+        "NSPhotoLibraryUsageDescription": "RedDot needs photo library access to attach evidence to journal entries.",
+        "NSFaceIDUsageDescription": "RedDot uses Face ID to protect your private data."
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#C0392B"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "package": "uk.irfanshadikrishad.reddot",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "FOREGROUND_SERVICE",
+        "POST_NOTIFICATIONS"
+      ],
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "@react-native-firebase/app",
+      "@react-native-firebase/messaging",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "RedDot needs camera access for evidence recording."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "RedDot needs your location for SOS alerts and finding nearby safe spaces."
+        }
+      ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "RedDot uses Face ID to protect your private data."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }
