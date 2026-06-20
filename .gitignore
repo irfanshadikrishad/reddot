@@ -45,3 +45,5 @@ google-services.json
 GoogleService-Info.plist
 
 /android/app/reddot-release.keystore
+
+AGENTS.md

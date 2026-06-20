@@ -1,4 +1,5 @@
 // app/(auth)/login.tsx
+import { Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -18,7 +19,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useTheme } from '../../contexts/ThemeContext'
 
 export default function LoginScreen() {
-  const { signInWithEmail, signInWithGoogle, isLoading, user } = useAuth()
+  const { signInWithEmail, isLoading, user } = useAuth()
   const { theme } = useTheme()
 
   const [email, setEmail] = useState('')
@@ -70,26 +71,6 @@ export default function LoginScreen() {
     }
   }, [email, password, validate, signInWithEmail])
 
-  const handleGoogle = useCallback(async () => {
-    Keyboard.dismiss()
-
-    const result = await signInWithGoogle()
-
-    if (result.success && isMounted.current) {
-      setTimeout(() => {
-        if (isMounted.current) {
-          router.replace('/(app)/home')
-        }
-      }, 100)
-    } else if (
-      result.error &&
-      result.error !== 'Sign in cancelled.' &&
-      isMounted.current
-    ) {
-      Alert.alert('Google Sign In Failed', result.error)
-    }
-  }, [signInWithGoogle])
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -105,7 +86,7 @@ export default function LoginScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.logo}>🔴</Text>
+          <Ionicons name='ellipse' size={64} color={theme.primary} />
           <Text style={[styles.title, { color: theme.primary }]}>RedDot</Text>
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
             Safe. Private. Always.
@@ -187,10 +168,16 @@ export default function LoginScreen() {
               <TouchableOpacity
                 onPress={() => setShowPassword((v) => !v)}
                 style={styles.eyeButton}
+                accessibilityRole='button'
+                accessibilityLabel={
+                  showPassword ? 'Hide password' : 'Show password'
+                }
               >
-                <Text style={{ fontSize: 18 }}>
-                  {showPassword ? '🙈' : '👁️'}
-                </Text>
+                <Ionicons
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                  size={20}
+                  color={theme.textSecondary}
+                />
               </TouchableOpacity>
             </View>
             {errors.password && (
@@ -226,35 +213,6 @@ export default function LoginScreen() {
               <Text style={styles.primaryButtonText}>Sign In</Text>
             )}
           </TouchableOpacity>
-
-          {/* Divider */}
-          <View style={styles.divider}>
-            <View
-              style={[styles.dividerLine, { backgroundColor: theme.border }]}
-            />
-            <Text style={[styles.dividerText, { color: theme.textMuted }]}>
-              or
-            </Text>
-            <View
-              style={[styles.dividerLine, { backgroundColor: theme.border }]}
-            />
-          </View>
-
-          {/* Google */}
-          <TouchableOpacity
-            style={[
-              styles.googleButton,
-              { backgroundColor: theme.surface, borderColor: theme.border },
-            ]}
-            onPress={handleGoogle}
-            disabled={isLoading}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.googleIcon}>G</Text>
-            <Text style={[styles.googleText, { color: theme.text }]}>
-              Continue with Google
-            </Text>
-          </TouchableOpacity>
         </View>
 
         {/* Register link */}
@@ -271,7 +229,12 @@ export default function LoginScreen() {
 
         {/* Safety note */}
         <Text style={[styles.safetyNote, { color: theme.textMuted }]}>
-          🛡️ Your information is encrypted and never shared
+          <Ionicons
+            name='shield-checkmark-outline'
+            size={14}
+            color={theme.textMuted}
+          />{' '}
+          Your information is encrypted and never shared
         </Text>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -287,7 +250,6 @@ const styles = StyleSheet.create({
     gap: 24,
   },
   header: { alignItems: 'center', gap: 6 },
-  logo: { fontSize: 64 },
   title: { fontSize: 36, fontWeight: '800', letterSpacing: 1 },
   subtitle: { fontSize: 14, letterSpacing: 0.5 },
   form: { gap: 16 },
@@ -320,25 +282,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginVertical: 4,
-  },
-  dividerLine: { flex: 1, height: 1 },
-  dividerText: { fontSize: 13 },
-  googleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    gap: 10,
-  },
-  googleIcon: { fontSize: 18, fontWeight: '800', color: '#4285F4' },
-  googleText: { fontSize: 15, fontWeight: '600' },
   footer: { flexDirection: 'row', justifyContent: 'center' },
   footerText: { fontSize: 14 },
   footerLink: { fontSize: 14, fontWeight: '700' },

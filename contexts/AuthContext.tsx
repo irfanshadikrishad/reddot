@@ -1,5 +1,16 @@
 // contexts/AuthContext.tsx
-import { FirebaseAuthTypes } from '@react-native-firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  deleteUser,
+  FirebaseAuthTypes,
+  signOut as firebaseSignOut,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from '@react-native-firebase/auth'
 import {
   deleteDoc,
   doc,
@@ -151,7 +162,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Auth state listener
   useEffect(() => {
-    const unsubscribe = firebaseAuth.onAuthStateChanged(async (user) => {
+    const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
       if (user) {
         const userProfile = await fetchOrCreateProfile(user)
         setState({
@@ -182,7 +193,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ): Promise<{ success: boolean; error?: string }> => {
       setState((s) => ({ ...s, isLoading: true }))
       try {
-        await firebaseAuth.signInWithEmailAndPassword(email.trim(), password)
+        await signInWithEmailAndPassword(firebaseAuth, email.trim(), password)
         return { success: true }
       } catch (err: any) {
         return { success: false, error: parseFirebaseError(err.code) }
@@ -201,12 +212,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ): Promise<{ success: boolean; error?: string }> => {
       setState((s) => ({ ...s, isLoading: true }))
       try {
-        const userCredential =
-          await firebaseAuth.createUserWithEmailAndPassword(
-            email.trim(),
-            password
-          )
-        await userCredential.user.updateProfile({
+        const userCredential = await createUserWithEmailAndPassword(
+          firebaseAuth,
+          email.trim(),
+          password
+        )
+        await updateProfile(userCredential.user, {
           displayName: displayName.trim(),
         })
         return { success: true }
@@ -232,9 +243,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const idToken = response.data?.idToken
       if (!idToken) throw new Error('No ID token from Google')
 
-      const googleCredential =
-        firebaseAuth.GoogleAuthProvider.credential(idToken)
-      await firebaseAuth.signInWithCredential(googleCredential)
+      const googleCredential = GoogleAuthProvider.credential(idToken)
+      await signInWithCredential(firebaseAuth, googleCredential)
       return { success: true }
     } catch (err: any) {
       console.error('Google Sign-In error:', err)
@@ -263,8 +273,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       // Try to sign out from Google if possible
       try {
-        const isSignedIn = await GoogleSignin.isSignedIn()
-        if (isSignedIn) {
+        if (GoogleSignin.getCurrentUser()) {
           await GoogleSignin.signOut()
         }
       } catch (googleErr) {
@@ -272,7 +281,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Sign out from Firebase
-      await firebaseAuth.signOut()
+      await firebaseSignOut(firebaseAuth)
     } catch (err) {
       console.error('signOut error:', err)
     }
@@ -285,7 +294,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const sendPasswordReset = useCallback(
     async (email: string): Promise<{ success: boolean; error?: string }> => {
       try {
-        await firebaseAuth.sendPasswordResetEmail(email.trim())
+        await sendPasswordResetEmail(firebaseAuth, email.trim())
         return { success: true }
       } catch (err: any) {
         return { success: false, error: parseFirebaseError(err.code) }
@@ -341,7 +350,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       )
       await deleteDoc(userRef)
       // Delete Firebase Auth account
-      await state.user.delete()
+      await deleteUser(state.user)
       return { success: true }
     } catch (err: any) {
       return {

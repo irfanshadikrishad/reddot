@@ -1,30 +1,30 @@
 // services/firebase.ts
-import { getApps, initializeApp } from '@react-native-firebase/app'
-import auth from '@react-native-firebase/auth'
-import database from '@react-native-firebase/database'
-import firestore from '@react-native-firebase/firestore'
-import messaging from '@react-native-firebase/messaging'
-import storage from '@react-native-firebase/storage'
-
-// Initialize Firebase only if not already initialized
-if (!getApps().length) {
-  initializeApp()
-}
+import { getAuth } from '@react-native-firebase/auth'
+import {
+  serverTimestamp as databaseServerTimestamp,
+  getDatabase,
+} from '@react-native-firebase/database'
+import {
+  serverTimestamp as firestoreServerTimestamp,
+  getFirestore,
+  increment,
+} from '@react-native-firebase/firestore'
+import { getMessaging } from '@react-native-firebase/messaging'
+import { getStorage } from '@react-native-firebase/storage'
 
 // Get instances
-export const firebaseAuth = auth()
-export const firestoreDB = firestore()
-export const realtimeDB = database()
-export const firebaseStorage = storage()
-export const firebaseMessaging = messaging()
+export const firebaseAuth = getAuth()
+export const firestoreDB = getFirestore()
+export const realtimeDB = getDatabase()
+export const firebaseStorage = getStorage()
+export const firebaseMessaging = getMessaging()
 
 // Firestore helpers - call as functions
-export const serverTimestamp = () => firestore.FieldValue.serverTimestamp()
-export const firestoreIncrement = (n: number) =>
-  firestore.FieldValue.increment(n)
+export const serverTimestamp = firestoreServerTimestamp
+export const firestoreIncrement = increment
 
 // Realtime DB helpers - call as function
-export const getServerTimestamp = () => database.ServerValue.TIMESTAMP
+export const getServerTimestamp = databaseServerTimestamp
 
 export default {
   auth: firebaseAuth,
