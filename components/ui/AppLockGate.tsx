@@ -15,6 +15,7 @@ import {
   Vibration,
   View,
 } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
 interface Props {
   children: React.ReactNode
@@ -44,7 +45,7 @@ export function AppLockGate({ children }: Props) {
 function LoadingScreen() {
   return (
     <View style={loadingStyles.container}>
-      <Text style={loadingStyles.logo}>🔴</Text>
+      <Ionicons name='shield-checkmark' size={64} color='#C0392B' />
       <ActivityIndicator
         color='#C0392B'
         size='large'
@@ -61,7 +62,6 @@ const loadingStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  logo: { fontSize: 64 },
 })
 
 // ─── Lock Screen ──────────────────────────────────────────────────────────────
@@ -157,7 +157,7 @@ function LockScreen() {
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <Text style={styles.logoEmoji}>🔴</Text>
+          <Ionicons name='shield-checkmark' size={64} color={theme.primary} />
           <Text style={[styles.appName, { color: theme.primary }]}>RedDot</Text>
           <Text style={[styles.tagline, { color: theme.textMuted }]}>
             Safe. Private. Always.
@@ -239,7 +239,7 @@ function LockScreen() {
           </View>
         ) : (
           <View style={styles.lockoutContainer}>
-            <Text style={[styles.lockoutIcon]}>🔒</Text>
+            <Ionicons name='lock-closed' size={44} color={theme.danger} />
             <Text style={[styles.lockoutTitle, { color: theme.danger }]}>
               Too Many Attempts
             </Text>
@@ -260,7 +260,7 @@ function LockScreen() {
             disabled={isLoading}
             activeOpacity={0.7}
           >
-            <Text style={styles.biometricIcon}>👆</Text>
+            <Ionicons name='finger-print' size={28} color={theme.primary} />
             <Text
               style={[styles.biometricText, { color: theme.textSecondary }]}
             >
@@ -270,9 +270,16 @@ function LockScreen() {
         )}
 
         {/* Privacy notice */}
-        <Text style={[styles.privacyText, { color: theme.textMuted }]}>
-          🛡️ Your data is encrypted and private
-        </Text>
+        <View style={styles.privacyRow}>
+          <Ionicons
+            name='shield-checkmark-outline'
+            size={16}
+            color={theme.textMuted}
+          />
+          <Text style={[styles.privacyText, { color: theme.textMuted }]}>
+            Your data is encrypted and private
+          </Text>
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   )
@@ -300,10 +307,6 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  logoEmoji: {
-    fontSize: 72,
     marginBottom: 8,
   },
   appName: {
@@ -369,9 +372,6 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 24,
   },
-  lockoutIcon: {
-    fontSize: 48,
-  },
   lockoutTitle: {
     fontSize: 20,
     fontWeight: '700',
@@ -389,15 +389,18 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 12,
   },
-  biometricIcon: {
-    fontSize: 36,
-  },
   biometricText: {
     fontSize: 14,
+  },
+  privacyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 16,
   },
   privacyText: {
     fontSize: 12,
     textAlign: 'center',
-    marginTop: 16,
   },
 })

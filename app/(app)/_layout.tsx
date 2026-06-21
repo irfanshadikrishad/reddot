@@ -1,48 +1,48 @@
-// app/(app)/_layout.tsx
-import { Stack, router, useRootNavigationState } from 'expo-router'
-import { useEffect } from 'react'
-import { ActivityIndicator, View } from 'react-native'
-import { useAuth } from '../../contexts/AuthContext'
+import { hasAppPin } from '@/services/secureStorage'
+import { Stack, router } from 'expo-router'
+import { useEffect, useState } from 'react'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 
-function AppLayoutContent() {
-  const { user, isLoading } = useAuth()
-  const rootNavigationState = useRootNavigationState()
+export default function AppLayout() {
+  const [isCheckingSetup, setIsCheckingSetup] = useState(true)
 
   useEffect(() => {
-    // Wait for navigation to be ready
-    if (!rootNavigationState?.key) return
+    let isMounted = true
 
-    if (!isLoading && !user) {
-      router.replace('/(auth)/login')
+    hasAppPin().then((isSetUp) => {
+      if (!isMounted) return
+      if (!isSetUp) {
+        router.replace('/(onboarding)')
+        return
+      }
+      setIsCheckingSetup(false)
+    })
+
+    return () => {
+      isMounted = false
     }
-  }, [user, isLoading, rootNavigationState?.key])
+  }, [])
 
-  if (isLoading) {
+  if (isCheckingSetup) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size='large' color='#C0392B' />
+      <View style={styles.loading}>
+        <ActivityIndicator color='#C0392B' size='large' />
       </View>
     )
-  }
-
-  if (!user) {
-    return null
   }
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name='home' />
-      <Stack.Screen name='map' />
-      <Stack.Screen name='chat' />
-      <Stack.Screen name='journal' />
-      <Stack.Screen name='resources' />
-      <Stack.Screen name='community' />
-      <Stack.Screen name='children' />
-      <Stack.Screen name='settings' />
     </Stack>
   )
 }
 
-export default function AppLayout() {
-  return <AppLayoutContent />
-}
+const styles = StyleSheet.create({
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#0D0D0D',
+  },
+})

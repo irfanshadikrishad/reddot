@@ -1,15 +1,16 @@
-// app/(app)/home.tsx
-import { useAuth } from '@/contexts/AuthContext'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { useTheme } from '@/contexts/ThemeContext'
+import { StyleSheet, Text, View } from 'react-native'
 
 export default function HomeScreen() {
-  const { user, signOut } = useAuth()
+  const { theme } = useTheme()
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>RedDot - Safety Companion</Text>
-      <Text style={styles.subtitle}>Welcome {user?.email}</Text>
-      <Button title='Logout' onPress={signOut} color='#C0392B' />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <Text style={[styles.title, { color: theme.primary }]}>RedDot</Text>
+      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+        Local setup is complete. The safety dashboard is the next Phase 1
+        milestone.
+      </Text>
     </View>
   )
 }
@@ -19,16 +20,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#0D0D0D',
+    paddingHorizontal: 24,
   },
   title: {
     fontSize: 24,
-    color: '#C0392B',
+    fontWeight: '800',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#FFFFFF',
-    marginBottom: 30,
+    textAlign: 'center',
+    lineHeight: 23,
   },
 })

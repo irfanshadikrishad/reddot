@@ -1,7 +1,22 @@
-// app/index.tsx
+import { hasAppPin } from '@/services/secureStorage'
+import { router } from 'expo-router'
+import { useEffect } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 
 export default function Index() {
+  useEffect(() => {
+    let isMounted = true
+
+    hasAppPin().then((isSetUp) => {
+      if (!isMounted) return
+      router.replace(isSetUp ? '/(app)/home' : '/(onboarding)')
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   return (
     <View
       style={{

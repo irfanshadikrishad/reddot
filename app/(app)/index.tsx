@@ -1,20 +1,11 @@
-// app/(app)/index.tsx
-import { useAuth } from '@/contexts/AuthContext'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 
-export default function Index() {
-  const { user, isInitialized } = useAuth()
-
+export default function AppIndex() {
   useEffect(() => {
-    if (!isInitialized) return
-    if (user) {
-      router.replace('/(app)/home')
-    } else {
-      router.replace('/(auth)/login')
-    }
-  }, [user, isInitialized])
+    router.replace('/(app)/home')
+  }, [])
 
   return (
     <View

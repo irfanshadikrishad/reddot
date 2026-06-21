@@ -85,6 +85,28 @@ export async function hasAppPin(): Promise<boolean> {
   return pin !== null
 }
 
+export async function completeLocalOnboarding(pin: string): Promise<boolean> {
+  const pinSaved = await setAppPin(pin)
+  if (!pinSaved) return false
+
+  const lockEnabled = await setAppLockEnabled(true)
+  if (!lockEnabled) {
+    await deleteItem(KEYS.APP_PIN)
+    return false
+  }
+
+  const activitySaved = await setItem(KEYS.LAST_ACTIVE, String(Date.now()))
+  if (!activitySaved) {
+    await Promise.all([
+      deleteItem(KEYS.APP_PIN),
+      deleteItem(KEYS.APP_LOCK_ENABLED),
+    ])
+    return false
+  }
+
+  return true
+}
+
 // ─── PIN lockout ─────────────────────────────────────────────────────────────
 
 export async function recordFailedPinAttempt(): Promise<{
