@@ -4,8 +4,7 @@ import { StyleSheet } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 
-import { AppLockGate } from '@/components/ui/AppLockGate'
-import { AppLockProvider } from '@/contexts/AppLockContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 
 export default function RootLayout() {
@@ -13,16 +12,14 @@ export default function RootLayout() {
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>
         <ThemeProvider>
-          <AppLockProvider>
-            <AppLockGate>
-              <Stack screenOptions={{ headerShown: false }}>
-                <Stack.Screen name='index' />
-                <Stack.Screen name='(onboarding)' />
-                <Stack.Screen name='(app)' />
-              </Stack>
-              <StatusBar style='auto' />
-            </AppLockGate>
-          </AppLockProvider>
+          <AuthProvider>
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name='index' />
+              <Stack.Screen name='(auth)' />
+              <Stack.Screen name='(app)' />
+            </Stack>
+            <StatusBar style='auto' />
+          </AuthProvider>
         </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

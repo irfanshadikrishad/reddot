@@ -1,29 +1,18 @@
-import { hasAppPin } from '@/services/secureStorage'
+import { useAuth } from '@/contexts/AuthContext'
 import { Stack, router } from 'expo-router'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 
 export default function AppLayout() {
-  const [isCheckingSetup, setIsCheckingSetup] = useState(true)
+  const { user, isInitializing } = useAuth()
 
   useEffect(() => {
-    let isMounted = true
+    if (isInitializing) return
+    if (!user) router.replace('/(auth)/login')
+    else if (!user.emailVerified) router.replace('/(auth)/verify-email')
+  }, [isInitializing, user])
 
-    hasAppPin().then((isSetUp) => {
-      if (!isMounted) return
-      if (!isSetUp) {
-        router.replace('/(onboarding)')
-        return
-      }
-      setIsCheckingSetup(false)
-    })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
-
-  if (isCheckingSetup) {
+  if (isInitializing || !user || !user.emailVerified) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator color='#C0392B' size='large' />
@@ -34,6 +23,13 @@ export default function AppLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name='home' />
+      <Stack.Screen name='hotlines' />
+      <Stack.Screen name='sos' />
+      <Stack.Screen name='child-help' />
+      <Stack.Screen name='trusted-contacts' />
+      <Stack.Screen name='safety-plan' />
+      <Stack.Screen name='settings' />
+      <Stack.Screen name='privacy-lock' />
     </Stack>
   )
 }

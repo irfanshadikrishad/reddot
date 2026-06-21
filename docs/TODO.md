@@ -1,6 +1,6 @@
 # RedDot Implementation Roadmap
 
-This file tracks implementation order and progress for the standalone app
+This file tracks implementation order and progress for the device-first app
 defined in `docs/PROJECT.md`. Read `docs/PROJECT.md` and `AGENTS.md` before
 working on a checklist item. Do not implement a later phase while a required
 earlier phase remains incomplete unless the user explicitly changes priority.
@@ -8,41 +8,40 @@ earlier phase remains incomplete unless the user explicitly changes priority.
 A checked item must satisfy its listed acceptance criteria; placeholders, mocked
 success states, and unverified emergency paths do not count as complete.
 
-## Phase 1: Standalone Foundation And Immediate Help
+## Phase 1: Account Foundation And Immediate Help
 
 ### Objective
 
-Remove server dependencies and deliver the smallest useful offline-first safety
-app: local entry, privacy lock, trusted contacts, Bangladesh hotlines, and a
+Limit hosted services to Firebase Authentication and deliver the smallest useful
+device-first safety app: verified entry, privacy lock, trusted contacts, Bangladesh hotlines, and a
 guided SOS handoff.
 
 ### Build order
 
-#### 1. Remove the server architecture
+#### 1. Establish Firebase email authentication
 
-- [x] Remove Firebase and Google Sign-In initialization, contexts, services, and
-      screen dependencies.
-- [x] Replace login, registration, and password reset with a local first-run
-      privacy setup. No email or account is required.
-- [x] Route returning users through app-lock state, not remote authentication.
-- [x] Remove unused Firebase and Google Sign-In packages after all imports are
-      gone.
-- [x] Remove Firebase collection and realtime path constants.
+- [x] Add email/password registration and sign-in through Firebase Authentication.
+- [x] Send email verification after registration and support resend.
+- [x] Block protected routes until Firebase confirms email verification.
+- [x] Add password reset and sign-out.
+- [x] Keep Google Sign-In, Firestore, Realtime Database, Storage, and Messaging out
+      of the runtime.
 
 Acceptance criteria:
 
-- the app launches in airplane mode;
-- a new user can enter the app without an account;
-- no runtime code imports `@react-native-firebase/*` or Google Sign-In;
-- no screen waits for remote authentication.
+- registration, verification, sign-in, and reset failures are visible;
+- an unverified account cannot open protected routes;
+- an existing verified session can restore without re-entering a password;
+- sign-out cannot expose one account's local records to a later account;
+- safety records are not written to Firebase.
 
 #### 2. Establish typed local persistence
 
-- [ ] Add `expo-sqlite` and `expo-sms` using Expo SDK-compatible versions.
-- [ ] Create a versioned local schema and idempotent migration runner.
-- [ ] Add a reviewed application-layer encryption service and repository interfaces for contacts and settings.
-- [ ] Keep encryption keys and lock secrets in SecureStore.
-- [ ] Add tests for encryption round trips, create, read, update, delete, migration, and corrupt data handling.
+- [x] Add `expo-sqlite` and `expo-sms` using Expo SDK-compatible versions.
+- [x] Create a versioned local schema and idempotent migration runner.
+- [x] Add a reviewed application-layer encryption service and repository interfaces for contacts and settings.
+- [x] Keep encryption keys and lock secrets in SecureStore.
+- [x] Add tests for encryption round trips, create, read, update, delete, migration, and corrupt data handling.
 
 Acceptance criteria:
 
@@ -51,16 +50,16 @@ Acceptance criteria:
 - private records are never written to AsyncStorage;
 - repository failures return typed errors and do not crash a screen.
 
-#### 3. Build local onboarding and privacy lock
+#### 3. Build optional local privacy lock
 
-- [ ] Explain standalone storage, device risk, emergency limitations, and deletion
-      during first run.
-- [ ] Let the user create an app PIN and optionally enable biometrics.
-- [ ] Add fake-PIN setup with a warning not to reuse the real PIN.
-- [ ] Implement inactivity and background locking.
-- [ ] Add useful calculator, notes, weather, and news decoys that contain no
+- [x] Explain device-local safety storage, device risk, emergency limitations,
+      Firebase account boundaries, and deletion.
+- [x] Let the user create an app PIN and optionally enable biometrics.
+- [x] Add fake-PIN setup with a warning not to reuse the real PIN.
+- [x] Implement inactivity and background locking.
+- [x] Add useful calculator, notes, weather, and news decoys that contain no
       RedDot or safety branding.
-- [ ] Add privacy settings and local-data deletion.
+- [x] Add privacy settings and local-data deletion.
 
 Acceptance criteria:
 
@@ -87,11 +86,11 @@ Acceptance criteria:
 
 #### 5. Build trusted contacts and standalone SOS
 
-- [ ] Add local trusted-contact create, edit, delete, and selection.
-- [ ] Add SOS countdown, cancellation, optional one-time location, message preview,
+- [x] Add local trusted-contact create, edit, delete, and selection.
+- [x] Add SOS countdown, cancellation, optional one-time location, message preview,
       and system SMS composer handoff.
-- [ ] Show call and manual-message fallback when SMS or location is unavailable.
-- [ ] Clear exact location and message drafts when the flow closes.
+- [x] Show call and manual-message fallback when SMS or location is unavailable.
+- [x] Clear exact location and message drafts when the flow closes.
 
 Acceptance criteria:
 
@@ -107,7 +106,7 @@ Acceptance criteria:
       either verified or explicitly documented.
 - [ ] Airplane-mode dashboard, hotline, lock, contact, and SOS fallback journeys
       pass.
-- [ ] `npx tsc --noEmit`, formatting, and available automated tests pass.
+- [x] `npx tsc --noEmit`, formatting, and available automated tests pass.
 - [ ] No server SDK or remote-data code remains in the runtime bundle.
 
 ## Phase 2: Private Planning, Resources, And Child Safety
@@ -290,13 +289,13 @@ Acceptance criteria:
 - [ ] Security and privacy review findings are resolved or explicitly accepted.
 - [ ] Release documentation states limitations without promising rescue, delivery,
       anonymity, or professional outcomes.
-- [ ] The app is ready for a limited closed beta as a standalone product.
+- [ ] The app is ready for a limited closed beta as a device-first product.
 
 ## Definition Of Done For Every Agent Task
 
 A task is complete only when:
 
-- behavior matches this standalone architecture and the active phase;
+- behavior matches this device-first architecture and the active phase;
 - loading, empty, error, offline, denied-permission, and cancellation states that
   apply to the feature are handled;
 - sensitive data is neither logged nor stored in plaintext outside active memory;

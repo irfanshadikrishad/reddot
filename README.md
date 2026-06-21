@@ -1,13 +1,13 @@
 # RedDot
 
-RedDot is a standalone, device-first safety companion for women and children in
+RedDot is a device-first safety companion for women and children in
 Bangladesh. It is designed to make emergency contacts, trusted people, safety
 planning, private records, and child-safe help easier to reach without operating
 a RedDot backend or sending RedDot-owned data to a server.
 
 > **Development status:** RedDot is not ready for safety-critical use. The
-> legacy Firebase authentication has been removed in favor of local PIN setup and
-> app-lock routing. The current home screen is still a placeholder and most safety
+> Firebase email authentication and verification gate protected routes. The
+> current home screen is still a placeholder and most safety
 > workflows are not implemented.
 
 ## What Problem RedDot Addresses
@@ -109,11 +109,12 @@ The product and architecture specification is in
 criteria, safety gates, and definition of done are in
 [docs/TODO.md](docs/TODO.md).
 
-### Phase 1: Standalone Foundation And Immediate Help
+### Phase 1: Account Foundation And Immediate Help
 
-Remove Firebase and remote authentication, add local onboarding, typed encrypted
-local persistence, app lock and decoys, the safety dashboard, bundled hotlines,
-trusted contacts, and device-based SOS with cancellation and fallbacks.
+Use Firebase email authentication and verification while keeping safety records
+in typed encrypted local persistence. Add optional app lock and decoys, the
+safety dashboard, bundled hotlines, trusted contacts, and device-based SOS with
+cancellation and fallbacks.
 
 ### Phase 2: Private Planning, Resources, And Child Safety
 
@@ -131,28 +132,28 @@ and closed-beta documentation.
 The codebase currently contains:
 
 - Expo Router authentication and protected route groups;
-- local first-run PIN setup and app-lock routing;
-- theme and app-lock contexts;
+- Firebase email registration, verification, login, reset, and protected routing;
+- theme, authentication, and app-lock contexts;
 - SecureStore-based PIN, fake PIN, lockout, and local security helpers;
 - Bangladesh hotline constants and shared domain types;
 - a placeholder protected home screen.
 
-Do not treat an unchecked roadmap item as implemented. Continue Phase 1 in the documented order; local persistence and the safety
-dashboard are not implemented yet.
+Do not treat an unchecked roadmap item as implemented. Continue Phase 1 in the
+documented order; the safety dashboard is not implemented yet.
 
 ## Project Structure
 
 ```text
 app/
   _layout.tsx          Root providers and routing
-  (onboarding)/        Local first-run privacy and PIN setup
+  (auth)/              Firebase login, registration, verification, and reset
   (app)/               Protected local app routes
 components/            Shared UI components
 constants/             Configuration, theme tokens, and Bangladesh hotlines
-contexts/              Theme and app-lock state
+contexts/              Theme, Firebase authentication, and app-lock state
 docs/PROJECT.md        Product, architecture, safety, and scope specification
 docs/TODO.md           Three-phase implementation tracker and acceptance gates
-services/               Security and device services; local repositories planned
+services/               Firebase Auth, security, device, and local repositories
 types/                  Shared TypeScript domain types
 assets/                 App icons and images
 ```
@@ -166,8 +167,10 @@ assets/                 App icons and images
 - Xcode and CocoaPods on macOS for iOS native builds
 
 This project uses native modules, so validate safety-critical behavior in native
-development builds and on real devices. The app does not require Firebase credentials or other RedDot server
-configuration.
+development builds and on real devices. Copy `.env.example` to `.env`, add the
+Firebase web-app configuration, and enable Email/Password authentication in the
+Firebase console. No Firestore, Storage, Realtime Database, or Messaging setup is
+used.
 
 ### Install and run
 

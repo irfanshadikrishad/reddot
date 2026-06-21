@@ -5,6 +5,7 @@ const KEYS = {
   APP_PIN: 'reddot_app_pin',
   FAKE_PIN: 'reddot_fake_pin',
   JOURNAL_KEY: 'reddot_journal_key',
+  LOCAL_DATA_KEY: 'reddot_local_data_key',
   BIOMETRIC_ENABLED: 'reddot_biometric_enabled',
   APP_LOCK_ENABLED: 'reddot_app_lock_enabled',
   AUTO_LOGOUT_MINUTES: 'reddot_auto_logout_minutes',
@@ -16,6 +17,8 @@ const KEYS = {
 } as const
 
 type SecureKey = (typeof KEYS)[keyof typeof KEYS]
+
+let localDataKeyCreationPromise: Promise<string | null> | null = null
 
 // ─── Core secure store ops ───────────────────────────────────────────────────
 
@@ -220,6 +223,48 @@ export async function getJournalKey(): Promise<string | null> {
   return getItem(KEYS.JOURNAL_KEY)
 }
 
+export async function getOrCreateLocalDataKey(): Promise<string | null> {
+  const storedKey = await readLocalDataKey()
+  if (!storedKey.ok) return null
+  if (storedKey.value) {
+    return /^[a-f0-9]{64}$/.test(storedKey.value) ? storedKey.value : null
+  }
+
+  localDataKeyCreationPromise ??= createLocalDataKey().finally(() => {
+    localDataKeyCreationPromise = null
+  })
+  return localDataKeyCreationPromise
+}
+
+async function createLocalDataKey(): Promise<string | null> {
+  const storedKey = await readLocalDataKey()
+  if (!storedKey.ok) return null
+  if (storedKey.value) {
+    return /^[a-f0-9]{64}$/.test(storedKey.value) ? storedKey.value : null
+  }
+
+  const randomBytes = await Crypto.getRandomBytesAsync(32)
+  const key = Array.from(randomBytes)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
+
+  const saved = await setItem(KEYS.LOCAL_DATA_KEY, key)
+  return saved ? key : null
+}
+
+async function readLocalDataKey(): Promise<
+  { ok: true; value: string | null } | { ok: false }
+> {
+  try {
+    return {
+      ok: true,
+      value: await SecureStore.getItemAsync(KEYS.LOCAL_DATA_KEY),
+    }
+  } catch {
+    return { ok: false }
+  }
+}
+
 // ─── Activity tracking for auto-logout ───────────────────────────────────────
 
 export async function updateLastActive(): Promise<void> {
@@ -240,8 +285,9 @@ export async function isSessionExpired(): Promise<boolean> {
 
 // ─── Emergency wipe ──────────────────────────────────────────────────────────
 
-export async function emergencyWipe(): Promise<void> {
-  await Promise.allSettled(
+export async function emergencyWipe(): Promise<boolean> {
+  const results = await Promise.allSettled(
     Object.values(KEYS).map((key) => SecureStore.deleteItemAsync(key))
   )
+  return results.every((result) => result.status === 'fulfilled')
 }

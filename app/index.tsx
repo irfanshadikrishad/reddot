@@ -1,21 +1,21 @@
-import { hasAppPin } from '@/services/secureStorage'
+import { useAuth } from '@/contexts/AuthContext'
 import { router } from 'expo-router'
 import { useEffect } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 
 export default function Index() {
+  const { user, isInitializing } = useAuth()
+
   useEffect(() => {
-    let isMounted = true
-
-    hasAppPin().then((isSetUp) => {
-      if (!isMounted) return
-      router.replace(isSetUp ? '/(app)/home' : '/(onboarding)')
-    })
-
-    return () => {
-      isMounted = false
-    }
-  }, [])
+    if (isInitializing) return
+    router.replace(
+      !user
+        ? '/(auth)/login'
+        : user.emailVerified
+          ? '/(app)/home'
+          : '/(auth)/verify-email'
+    )
+  }, [isInitializing, user])
 
   return (
     <View

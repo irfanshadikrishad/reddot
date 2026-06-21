@@ -71,7 +71,8 @@
         {
           "faceIDPermission": "RedDot uses Face ID to protect your private data."
         }
-      ]
+      ],
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

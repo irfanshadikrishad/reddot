@@ -34,6 +34,7 @@ export interface EmergencyContact {
   relation: string
   notifyBySMS: boolean
   notifyByCall: boolean
+  isSafeAdult: boolean
 }
 
 export interface SOSAlert {
@@ -178,7 +179,14 @@ export interface SafetyAlert {
 }
 
 // ─── Hotlines ────────────────────────────────────────────────────────────────
-export interface Hotline {
+export interface BundledResourceMetadata {
+  sourceName: string
+  sourceUrl: string
+  verificationStatus: 'reviewed' | 'needs_review'
+  lastVerifiedAt: string
+}
+
+export interface Hotline extends BundledResourceMetadata {
   id: string
   name: string
   number: string
@@ -190,4 +198,41 @@ export interface Hotline {
     | 'police'
     | 'mental_health'
   available24h: boolean
+}
+
+// ─── Local repositories ─────────────────────────────────────────────────────
+export type RepositoryErrorCode =
+  | 'database_unavailable'
+  | 'encryption_unavailable'
+  | 'invalid_data'
+  | 'not_found'
+  | 'write_failed'
+
+export interface RepositoryError {
+  code: RepositoryErrorCode
+  message: string
+}
+
+export type RepositoryResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: RepositoryError }
+
+export interface ContactInput {
+  name: string
+  phone: string
+  relation: string
+  notifyBySMS: boolean
+  notifyByCall: boolean
+  isSafeAdult: boolean
+}
+
+export type LocalSettingKey =
+  | 'default_sos_message'
+  | 'include_location_in_sos'
+  | 'selected_contact_ids'
+
+export interface SosDraftSettings {
+  defaultMessage: string
+  includeLocation: boolean
+  selectedContactIds: string[]
 }

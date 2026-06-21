@@ -1,6 +1,6 @@
 # RedDot Project Specification
 
-This document defines RedDot's product purpose, users, standalone architecture,
+This document defines RedDot's product purpose, users, device-first architecture,
 safety boundaries, data design, and scope. Read it before changing product
 behavior or architecture. Use `docs/TODO.md` only for implementation order and
 progress.
@@ -25,11 +25,13 @@ professionals. The interface must never imply otherwise.
 
 ## 2. Non-Negotiable Architecture Decision
 
-RedDot is a standalone mobile app. It will not have a custom backend, Firebase,
-Supabase, Cloud Functions, an app-operated API, remote database, cloud storage,
-realtime chat server, or web administration panel.
+RedDot is a device-first mobile app that uses Firebase Authentication only for
+email/password identity and email verification. It will not have a custom
+backend, Firestore, Realtime Database, Firebase Storage, Cloud Functions,
+Supabase, an app-operated API, remote safety-data storage, remote chat, or a web
+administration panel.
 
-All RedDot-owned data and logic must remain on the device. The app may hand an
+Safety records and safety workflow state must remain on the device. The app may hand an
 action to an operating-system or external service only when the user initiates
 it. Allowed integrations are:
 
@@ -40,28 +42,31 @@ it. Allowed integrations are:
 - local authentication, secure storage, private files, and local notifications;
 - a map view when map tiles are available, with an offline list fallback.
 
-Standalone does not mean that phone calls, SMS delivery, GPS, or map tiles work
-without their underlying device or network services. It means RedDot does not
-operate or depend on its own server. Every external handoff needs a visible
-failure state and a local fallback.
+Device-first does not mean that authentication, phone calls, SMS delivery, GPS,
+or map tiles work without their underlying services. Firebase sign-in,
+registration, verification, and password reset require network access. Safety
+actions must not depend on a RedDot-operated server. Every external handoff
+needs a visible failure state and a local fallback.
 
 ### Consequences for the existing repository
 
-Implementation agents must remove, rather than extend, the current
-server-oriented architecture:
+Implementation agents must keep the hosted surface limited:
 
-- replace Firebase authentication with local onboarding and app-lock state;
-- remove `AuthContext`, Firebase service usage, Google Sign-In, and authenticated
-  profile reads and writes;
-- remove unused `@react-native-firebase/*` and Google Sign-In dependencies only
-  after all imports are gone;
+- use Firebase Authentication for email/password accounts, email verification,
+  password reset, session persistence, and sign-out only;
+- require a verified email before protected routes open;
+- clear protected device-local records on sign-out before another account can
+  authenticate on the device;
+- do not store profiles or safety records in Firebase;
+- do not add Google Sign-In or unused `@react-native-firebase/*` modules;
 - replace Firestore and Realtime Database models with local repository APIs;
 - remove chat rooms, support groups, community posting, remote reviews, push
   delivery, cloud evidence uploads, remote wipe, and account deletion concepts;
 - keep bundled resources read-only in the app and update them through reviewed
   app releases.
 
-Do not add another hosted service to reproduce a removed Firebase feature.
+Do not extend Firebase beyond Authentication without a separately approved
+architecture and privacy review.
 
 ## 3. People And Safeguarding
 
@@ -216,10 +221,10 @@ Do not create a `delivered` status for SMS or calls.
 
 ## 6. Features Explicitly Out Of Scope
 
-The following features require server infrastructure, active staff, or moderation
-and must not be implemented in this standalone product:
+The following features require additional server infrastructure, active staff,
+or moderation and must not be implemented:
 
-- user accounts, social login, remote profiles, or cross-device sync;
+- social login, remote profiles, or cross-device safety-data sync;
 - server-delivered SOS, background remote alerts, or delivery tracking;
 - counselor chat, support groups, or child report submission to RedDot;
 - community tips, resource exchange, user ratings, reviews, or volunteer matching;
@@ -234,8 +239,7 @@ plan, and revised roadmap. It is not an incremental task under this document.
 
 ## 7. Current Repository Reality
 
-The app now uses local first-run PIN setup and app-lock routing with no Firebase
-or Google Sign-In runtime dependencies. The home screen remains a placeholder,
-local repositories are not established, and most safety workflows are still
-unimplemented. Phase 1 continues with typed encrypted local persistence before
-building the safety dashboard and SOS flow.
+The app now uses Firebase email/password registration, verification, sign-in,
+password reset, and verified-route gating. Google Sign-In and Firebase data
+products are not runtime dependencies. Safety records use encrypted local
+persistence. The home screen and most safety workflows remain incomplete.
