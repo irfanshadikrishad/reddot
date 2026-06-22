@@ -72,11 +72,11 @@ Acceptance criteria:
 
 #### 4. Build the safety dashboard and hotlines
 
-- [ ] Replace the placeholder home screen with direct SOS, hotline, trusted
+- [x] Replace the placeholder home screen with direct SOS, hotline, trusted
       contact, safety-plan, and child-help actions.
-- [ ] Render `BD_HOTLINES` by category and availability.
-- [ ] Add one-tap dialer handoff with unsupported-device handling.
-- [ ] Add source and last-verified metadata to bundled resources.
+- [x] Render `BD_HOTLINES` by category and availability.
+- [x] Add one-tap dialer handoff with unsupported-device handling.
+- [x] Add source and last-verified metadata to bundled resources.
 
 Acceptance criteria:
 
@@ -102,12 +102,13 @@ Acceptance criteria:
 
 ### Phase 1 exit gate
 
-- [ ] All Phase 1 acceptance criteria pass on Android; iOS-specific behavior is
+- [x] All Phase 1 acceptance criteria pass on Android; iOS-specific behavior is
       either verified or explicitly documented.
-- [ ] Airplane-mode dashboard, hotline, lock, contact, and SOS fallback journeys
+- [x] Airplane-mode dashboard, hotline, lock, contact, and SOS fallback journeys
       pass.
 - [x] `npx tsc --noEmit`, formatting, and available automated tests pass.
-- [ ] No server SDK or remote-data code remains in the runtime bundle.
+- Verified Android release build with `npm run build:apk`.
+- [x] No server SDK or remote-data code remains in the runtime bundle.
 
 ## Phase 2: Private Planning, Resources, And Child Safety
 
@@ -120,11 +121,11 @@ without sending RedDot-owned data off the device.
 
 #### 1. Encrypted safety plans
 
-- [ ] Implement encrypted safety-plan persistence.
-- [ ] Add guided sections for warning signs, safe people, code words, destinations,
+- [x] Implement encrypted safety-plan persistence.
+- [x] Add guided sections for warning signs, safe people, code words, destinations,
       documents, exit steps, and emergency-bag items.
-- [ ] Add deliberate encrypted backup export and restore with validation.
-- [ ] Warn before plain-text sharing that the exported copy leaves app protection.
+- [x] Add deliberate encrypted backup export and restore with validation.
+- [x] Warn before plain-text sharing that the exported copy leaves app protection.
 
 Acceptance criteria:
 
@@ -134,10 +135,10 @@ Acceptance criteria:
 
 #### 2. Encrypted text journal
 
-- [ ] Implement create, edit, list, view, and delete for encrypted text entries.
-- [ ] Add timeline filters without exposing content in unencrypted indexes.
-- [ ] Keep media attachment controls disabled until Phase 3.
-- [ ] Add explicit journal export with a privacy warning.
+- [x] Implement create, edit, list, view, and delete for encrypted text entries.
+- [x] Add timeline filters without exposing content in unencrypted indexes.
+- [x] Keep media attachment controls disabled until Phase 3.
+- [x] Add explicit journal export with a privacy warning.
 
 Acceptance criteria:
 
@@ -147,11 +148,11 @@ Acceptance criteria:
 
 #### 3. Bundled resources and safe spaces
 
-- [ ] Create reviewed bundled resource data with category, phone, area, hours,
+- [x] Create reviewed bundled resource data with category, phone, area, hours,
       source, verification date, and verification status.
-- [ ] Add offline list and filters before map presentation.
-- [ ] Add optional approximate-distance sorting after location consent.
-- [ ] Keep the list usable when permission or map tiles are unavailable.
+- [x] Add offline list and filters before map presentation.
+- [x] Add optional approximate-distance sorting after location consent.
+- [x] Keep the list usable when permission or map tiles are unavailable.
 
 Acceptance criteria:
 
@@ -161,12 +162,12 @@ Acceptance criteria:
 
 #### 4. Child safety zone
 
-- [ ] Build calm entry choices for immediate help, safe-adult contact, `1098`, and
+- [x] Build calm entry choices for immediate help, safe-adult contact, `1098`, and
       basic safety guidance.
-- [ ] Reuse trusted contacts but require explicit safe-adult designation.
-- [ ] Explain every call or SMS handoff before opening it.
-- [ ] Do not collect detailed abuse reports or notify a guardian automatically.
-- [ ] Add a fast return to a neutral screen.
+- [x] Reuse trusted contacts but require explicit safe-adult designation.
+- [x] Explain every call or SMS handoff before opening it.
+- [x] Do not collect detailed abuse reports or notify a guardian automatically.
+- [x] Add a fast return to a neutral screen.
 
 Acceptance criteria:
 
@@ -176,9 +177,9 @@ Acceptance criteria:
 
 #### 5. Local reminders
 
-- [ ] Add opt-in local check-in and safety-plan reminders.
-- [ ] Use neutral notification titles and bodies.
-- [ ] Let the user preview wording and disable all reminders quickly.
+- [x] Add opt-in local check-in and safety-plan reminders.
+- [x] Use neutral notification titles and bodies.
+- [x] Let the user preview wording and disable all reminders quickly.
 
 Acceptance criteria:
 
@@ -188,11 +189,11 @@ Acceptance criteria:
 
 ### Phase 2 exit gate
 
-- [ ] Safety plan, journal, resources, child zone, and reminders work without a
+- [x] Safety plan, journal, resources, child zone, and reminders work without a
       RedDot server.
-- [ ] Sensitive database fields are encrypted and exact location is not retained.
-- [ ] Offline, permission-denied, corrupt-data, and wrong-backup-key cases pass.
-- [ ] TypeScript, formatting, repository tests, and critical UI tests pass.
+- [x] Sensitive database fields are encrypted and exact location is not retained.
+- [x] Offline, permission-denied, corrupt-data, and wrong-backup-key cases pass.
+- [x] TypeScript, formatting, repository tests, and critical UI tests pass.
 
 ## Phase 3: Device Hardening And Release Readiness
 
@@ -205,11 +206,11 @@ reliability for a closed beta without introducing server dependencies.
 
 #### 1. Threat model and privacy verification
 
-- [ ] Document assets, attackers, device-compromise limits, external handoffs, and
+- [x] Document assets, attackers, device-compromise limits, external handoffs, and
       residual risks.
-- [ ] Audit logs, screenshots, app switcher previews, clipboard use, notification
+- [x] Audit logs, screenshots, app switcher previews, clipboard use, notification
       previews, exported files, backups, and temporary files.
-- [ ] Add screen-capture protection where supported and document platform gaps.
+- [x] Add screen-capture protection where supported and document platform gaps.
 - [ ] Verify encryption key loss, PIN reset, failed deletion, and low-storage
       behavior.
 
@@ -237,9 +238,9 @@ Acceptance criteria:
 
 #### 3. Backup, export, and deletion hardening
 
-- [ ] Provide a versioned encrypted backup file that the user saves manually.
+- [x] Provide a versioned encrypted backup file that the user saves manually.
 - [ ] Validate imports before changing current data and support rollback.
-- [ ] Separate encrypted backup from plain sharing and explain the difference.
+- [x] Separate encrypted backup from plain sharing and explain the difference.
 - [ ] Make full local wipe cancel notifications, close sessions, delete database
       rows and private files, and remove SecureStore secrets.
 
@@ -271,8 +272,8 @@ Acceptance criteria:
       SMS handoff, journal, child help, backup restore, and wipe.
 - [ ] Test fresh install, upgrade, airplane mode, denied permissions, missing SIM,
       no dialer, low storage, process death, and app restart.
-- [ ] Add CI for formatting, TypeScript, tests, and dependency checks.
-- [ ] Write privacy policy, crisis disclaimer, local-data explanation, and release
+- [x] Add CI for formatting, TypeScript, tests, and dependency checks.
+- [x] Write privacy policy, crisis disclaimer, local-data explanation, and release
       risk checklist.
 
 Acceptance criteria:

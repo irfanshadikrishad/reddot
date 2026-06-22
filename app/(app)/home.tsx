@@ -78,6 +78,24 @@ export default function HomeScreen() {
       onPress: () => router.push('/(app)/safety-plan'),
     },
     {
+      label: 'Journal',
+      description: 'Write encrypted private notes and timeline entries.',
+      icon: 'book-outline' as const,
+      onPress: () => router.push('/(app)/journal' as never),
+    },
+    {
+      label: 'Resources',
+      description: 'Browse reviewed safe spaces and support contacts.',
+      icon: 'map-outline' as const,
+      onPress: () => router.push('/(app)/resources' as never),
+    },
+    {
+      label: 'Reminders',
+      description: 'Set neutral local check-ins and plan prompts.',
+      icon: 'notifications-outline' as const,
+      onPress: () => router.push('/(app)/reminders' as never),
+    },
+    {
       label: 'Child help',
       description: 'Simple help path for a child.',
       icon: 'hand-left-outline' as const,

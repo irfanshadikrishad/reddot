@@ -15,7 +15,7 @@ describe('local database migrations', () => {
       ),
       execAsync: vi.fn(async (sql: string) => {
         statements.push(sql)
-        if (sql.includes('PRAGMA user_version = 1')) version = 1
+        if (sql.includes('PRAGMA user_version = 3')) version = 3
       }),
     }
 
@@ -24,8 +24,8 @@ describe('local database migrations', () => {
 
     expect(
       statements.filter((statement) => statement.includes('CREATE TABLE'))
-    ).toHaveLength(1)
+    ).toHaveLength(3)
     expect(database.withTransactionAsync).toHaveBeenCalledTimes(1)
-    expect(version).toBe(1)
+    expect(version).toBe(3)
   })
 })

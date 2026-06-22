@@ -75,6 +75,10 @@ export interface SafeSpace {
   verified: boolean
 }
 
+export interface BundledSafeSpace extends SafeSpace, BundledResourceMetadata {
+  area: string
+}
+
 // ─── Journal ─────────────────────────────────────────────────────────────────
 export interface JournalEntry {
   id: string
@@ -98,6 +102,29 @@ export interface JournalMedia {
 }
 
 export type MoodType = 'safe' | 'anxious' | 'scared' | 'hopeful' | 'neutral'
+
+export type JournalTimelineFilter = 'all' | '7d' | '30d' | '90d'
+
+export interface JournalEntryInput {
+  uid: string
+  title: string
+  content: string
+  mood?: MoodType
+  tags: string[]
+}
+
+export type ReminderKind = 'check_in' | 'safety_plan'
+
+export interface ReminderPreferences {
+  checkInEnabled: boolean
+  checkInHour: number
+  checkInMinute: number
+  checkInNotificationId: string | null
+  safetyPlanEnabled: boolean
+  safetyPlanHour: number
+  safetyPlanMinute: number
+  safetyPlanNotificationId: string | null
+}
 
 // ─── Chat ────────────────────────────────────────────────────────────────────
 export interface ChatRoom {
@@ -150,10 +177,23 @@ export interface SafetyPlan {
   safePersons: string[]
   safeLocations: string[]
   importantDocuments: string[]
+  exitSteps: string[]
   escapeBagItems: string[]
   codeWord?: string
   localResources: string[]
   updatedAt: number
+}
+
+export interface SafetyPlanInput {
+  uid: string
+  triggerSigns: string[]
+  safePersons: string[]
+  safeLocations: string[]
+  importantDocuments: string[]
+  exitSteps: string[]
+  escapeBagItems: string[]
+  codeWord: string
+  localResources: string[]
 }
 
 // ─── Settings ────────────────────────────────────────────────────────────────
@@ -230,6 +270,7 @@ export type LocalSettingKey =
   | 'default_sos_message'
   | 'include_location_in_sos'
   | 'selected_contact_ids'
+  | 'reminder_preferences'
 
 export interface SosDraftSettings {
   defaultMessage: string

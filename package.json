@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "scripts": {
     "android": "expo run:android",
+    "build:aab": "cd android && ./gradlew bundleRelease",
+    "build:apk": "cd android && ./gradlew assembleRelease",
+    "ci": "npm run format:check && npm run typecheck && npm test && npm ls --depth=0",
     "format": "prettier ./ --write",
+    "format:check": "prettier ./ --check",
     "ios": "expo run:ios",
     "start": "expo start",
     "test": "vitest run",
-    "web": "expo start --web",
-    "build:apk": "npx eas-cli build --platform android --profile apk",
-    "build:aab": "npx eas-cli build --platform android --profile aab"
+    "typecheck": "npx tsc --noEmit",
+    "web": "expo start --web"
   },
   "private": true,
   "main": "expo-router/entry",
@@ -36,6 +39,7 @@
     "expo-media-library": "~18.2.1",
     "expo-notifications": "~0.32.16",
     "expo-router": "~6.0.23",
+    "expo-screen-capture": "~8.0.9",
     "expo-secure-store": "~15.0.8",
     "expo-sms": "~14.0.8",
     "expo-sqlite": "~16.0.10",

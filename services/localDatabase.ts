@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite'
 
 const DATABASE_NAME = 'reddot.db'
-const CURRENT_SCHEMA_VERSION = 1
+const CURRENT_SCHEMA_VERSION = 3
 
 let databasePromise: Promise<SQLite.SQLiteDatabase> | null = null
 
@@ -27,6 +27,28 @@ export async function migrateLocalDatabase(
         CREATE TABLE IF NOT EXISTS local_settings (
           key TEXT PRIMARY KEY NOT NULL,
           encrypted_payload TEXT NOT NULL,
+          updated_at INTEGER NOT NULL
+        );
+      `)
+    }
+
+    if (currentVersion < 2) {
+      await database.execAsync(`
+        CREATE TABLE IF NOT EXISTS safety_plans (
+          id TEXT PRIMARY KEY NOT NULL,
+          encrypted_payload TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
+          updated_at INTEGER NOT NULL
+        );
+      `)
+    }
+
+    if (currentVersion < 3) {
+      await database.execAsync(`
+        CREATE TABLE IF NOT EXISTS journal_entries (
+          id TEXT PRIMARY KEY NOT NULL,
+          encrypted_payload TEXT NOT NULL,
+          created_at INTEGER NOT NULL,
           updated_at INTEGER NOT NULL
         );
       `)
